@@ -16,7 +16,8 @@ class ViewController: UIViewController {
     var numberOne = "0"
     var numberTwo = "0"
     var edditSwap = true
-    var actionSelected:Double = 0
+    var actionSelected:Int = 0
+    var calculated = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,26 +58,35 @@ class ViewController: UIViewController {
     }
     
     @IBAction func equateButtonTapped(_ sender: Any) {
+        
         var one: Double = Double(numberOne) ?? 0
         let two: Double = Double(numberTwo) ?? 0
         
         switch actionSelected {
         case 1:
             one += two
+            one = (one * 1000000000000000000).rounded() / 1000000000000000000
             numberOne = "\(one)"
             edditSwap = true
+            calculated = true
         case 2:
             one -= two
+            one = (one * 1000000000000000000).rounded() / 1000000000000000000
             numberOne = "\(one)"
             edditSwap = true
+            calculated = true
         case 3:
             one *= two
+            one = (one * 1000000000000000000).rounded() / 1000000000000000000
             numberOne = "\(one)"
             edditSwap = true
+            calculated = true
         case 4:
             one /= two
+            one = (one * 1000000000000000000).rounded() / 1000000000000000000
             numberOne = "\(one)"
             edditSwap = true
+            calculated = true
         default:
             updateLabel()
         }
@@ -104,17 +114,42 @@ class ViewController: UIViewController {
         
         switch edditSwap {
         case true:
-            one = (one + one)
+            one = (one / 100)
             numberOne = "\(one)"
         case false:
-            two -= (two + two)
+            two = (two / 100)
             numberTwo = "\(two)"
         }
         updateLabel()
     }
     
     @IBAction func dotButtonTapped(_ sender: Any) {
-        numberToAdd(numberString: ".")
+        var dotNumber = 0
+        
+        switch edditSwap {
+        case true:
+            for char in numberOne {
+                if char == "." {
+                    dotNumber += 1
+                }
+            }
+            if dotNumber > 0 {
+                return
+            }else {
+                numberToAdd(numberString: ".")
+            }
+        case false:
+            for char in numberTwo {
+                if char == "." {
+                    dotNumber += 1
+                }
+            }
+            if dotNumber > 0 {
+                return
+            }else {
+                numberToAdd(numberString: ".")
+            }
+        }
     }
     
     
@@ -163,6 +198,12 @@ class ViewController: UIViewController {
     
     
     func numberToAdd(numberString: String) {
+        if calculated && edditSwap {
+            numberOne = ""
+            numberTwo = "0"
+            calculated = false
+        }
+        
         let number = numberString
         
         switch edditSwap {
@@ -190,6 +231,9 @@ class ViewController: UIViewController {
         }
     }
     func swapEddit() {
+        if numberOne == "0"{
+            return
+        }
         edditSwap = false
         updateLabel()
     }
